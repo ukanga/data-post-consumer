@@ -6,7 +6,6 @@ class FHConsume(object):
 
     @cherrypy.expose
     def index(self):
-        import pdb; pdb.set_trace()
         if cherrypy.request.method not in ['POST']:
             return u"Only POST requests are allowed."
 
