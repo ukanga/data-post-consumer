@@ -1,6 +1,10 @@
 import cherrypy
 import json
 
+from pymongo import Connection
+
+connection = Connection('localhost', 27017)
+db = connection.data_consumer
 
 class DataConsumer(object):
 
@@ -17,6 +21,7 @@ class DataConsumer(object):
         if content_type == 'application/json':
             response = json.dumps({'status': 'OK'})
             data = json.loads(data)
+            self.save_json(data)
         # deal with xml data
         elif content_type == 'application/xml':
             response = '<?xmlversion="1.0"?><data><status>OK</status></data>'
@@ -27,6 +32,9 @@ class DataConsumer(object):
         cherrypy.response.headers['Content-type'] = content_type
         return response
 
+    def save_json(self, data):
+        instance = db.json_instance
+        instance.insert(data)
 
 cherrypy.config.update({'server.socket_host': '0.0.0.0'})
 
