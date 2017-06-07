@@ -49,38 +49,25 @@ def pop_top_records():
 class DataConsumer(object):
 
     @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
     def index(self):
-        if cherrypy.request.method not in ['POST']:
+        if cherrypy.request.method not in ['POST', 'PATCH', 'PUT']:
             data = []
             for r in db:
                 data.append(r)
 
-            return json.dumps(data)
+            return data
 
-        content_type = cherrypy.request.headers['Content-type']
-        # get posted data
-        data = cherrypy.request.body.read()
+        data = cherrypy.request.json
+        response = {'status': 'OK'}
 
-        # deal with json data
-        if content_type == 'application/json':
-            response = {'status': 'OK'}
-
-            data = json.loads(data)
-            if data.get('_id'):
-                response['ref'] = add_json_record(data)
-
-            response = json.dumps(response)
-        # deal with xml data
-        elif content_type == 'application/xml':
-            response = '<?xmlversion="1.0"?><data><status>OK</status></data>'
-        else:
-            response = "OK"
-
-        cherrypy.response.headers['Content-type'] = content_type
+        if data.get('_id'):
+            response['ref'] = add_json_record(data)
 
         return response
 
 
-cherrypy.config.update({'server.socket_host': '0.0.0.0'})
-
-cherrypy.quickstart(DataConsumer(), '')
+if __name__ == '__main__':
+    cherrypy.config.update({'server.socket_host': '0.0.0.0'})
+    cherrypy.quickstart(DataConsumer(), '')
