@@ -31,7 +31,7 @@ Build It
 $ docker build -t ukanga/data-post-consumer
 ```
 
-RUN It
+Run It
 
 ```
 $ docker run --name consumer --rm -d -p 8080:8080 ukanga/data-post-consumer
