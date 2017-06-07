@@ -25,12 +25,6 @@ expected output is: {"status": "OK"}
 Docker
 ------
 
-Build It
-
-```
-$ docker build -t ukanga/data-post-consumer
-```
-
 Run It
 
 ```
@@ -47,4 +41,10 @@ Stop It
 
 ```
 $ docker stop consumer
+```
+
+Rebuild It
+
+```
+$ docker build -t ukanga/data-post-consumer
 ```
