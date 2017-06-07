@@ -1,13 +1,17 @@
-Simple cherrypy server appp
-++++++++++++++++++++++++++++
+Simple cherrypy server app for consuming and displaying JSON posted data
+------------------------------------------------------------------------
 
 It is a demonstration of consuming data that is posted as json or xml from the webhook restservice in [Onadata](https://github.com/onaio/onadata).
 
 For the submitted JSON data if it has the key `_id` key, it will be stored in an in-memory database with [TinyDB](https://github.com/msiemens/tinydb) that stores at most 10 records.
 
-$ pip install -r requirements.pip
+Running it
+----------
 
+```
+$ pip install -r requirements.pip
 $ python controller.py
+```
 
 Examples
 --------
