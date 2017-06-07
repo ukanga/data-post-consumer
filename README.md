@@ -16,3 +16,31 @@ if you post a json file, you should get as response '{"status": "OK"}'
 $ curl -d @json_data.json localhost:8080 -H "Content-Type:application/json"
 
 expected output is: {"status": "OK"}
+
+
+Docker
+------
+
+Build It
+
+```
+$ docker build -t ukanga/data-post-consumer
+```
+
+RUN It
+
+```
+$ docker run --name consumer --rm -d -p 8080:8080 ukanga/data-post-consumer
+```
+
+View Logs
+
+```
+$ docker logs -f consumer
+```
+
+Stop It
+
+```
+$ docker stop consumer
+```
