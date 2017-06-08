@@ -1,5 +1,4 @@
 import cherrypy
-import json
 
 from tinydb import TinyDB, Query
 from tinydb.storages import MemoryStorage
@@ -47,7 +46,6 @@ def pop_top_records():
 
 
 class DataConsumer(object):
-
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
@@ -57,7 +55,7 @@ class DataConsumer(object):
             for r in db:
                 data.append(r)
 
-            return data
+            return [i for i in reversed(data)]
 
         data = cherrypy.request.json
         response = {'status': 'OK'}
