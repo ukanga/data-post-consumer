@@ -8,4 +8,6 @@ ADD controller.py   /srv/app/controller.py
 
 RUN pip install -r /srv/app/requirements.pip
 
+EXPOSE 8080
+
 ENTRYPOINT ["python3", "/srv/app/controller.py"]
