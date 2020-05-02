@@ -16,10 +16,13 @@ $ python controller.py
 Examples
 --------
 
-if you post a json file, you should get as response '{"status": "OK"}'
-$ curl -d @json_data.json localhost:8080 -H "Content-Type:application/json"
+if you post a json file, you should get as response `{"status": "OK"}`
 
-expected output is: {"status": "OK"}
+```
+$ curl -d @json_data.json localhost:8080 -H "Content-Type:application/json"
+{"status": "OK"}
+
+```
 
 
 Docker
