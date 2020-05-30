@@ -3,6 +3,8 @@
 This is a simple CherryPy microservice that recieves JSON data,
 stores it in memory and will list all items in memory on GET requests.
 """
+import uuid
+
 import cherrypy
 
 from tinydb import TinyDB, Query
@@ -13,7 +15,7 @@ db = TinyDB(storage=MemoryStorage)
 MAX_RECORDS = 10
 
 
-def add_json_record(data):
+def add_record(data):
     """Adds or edits record in the database.
 
     Edits records based on the '_id' key
@@ -24,7 +26,6 @@ def add_json_record(data):
     if not isinstance(data, dict):
         return None
 
-    eid = None
     Record = Query()  # pylint: disable=invalid-name
 
     _id = data.get('_id')
@@ -33,13 +34,37 @@ def add_json_record(data):
 
         if rec:
             db.update(data, eids=[rec.eid])
-            eid = rec.eid
 
-    if not eid:
-        pop_top_records()
-        eid = db.insert(data)
+            return _id
 
-    return eid
+    pop_top_records()
+
+    if '_id' not in data:
+        data['_id'] = f'{ uuid.uuid4() }'
+
+    db.insert(data)
+
+    return data['_id']
+
+
+def add_records(data):
+    """Validate and process records"""
+
+    results = []
+
+    if isinstance(data, dict):
+        record_id = add_record(data)
+        if record_id:
+            results.append(record_id)
+    elif isinstance(data, list):
+        for row in data:
+            record_id = add_record(row)
+            if record_id:
+                results.append(record_id)
+    else:
+        raise ValueError("Unable to process %s" % data)
+
+    return results
 
 
 def pop_top_records():
@@ -59,7 +84,7 @@ def pop_top_records():
 
 
 class DataConsumer:  # pylint: disable=too-few-public-methods
-    """The DataConsumer class
+    """The DataConsumer web application.
 
     Implements API endpoints for consuming and listing the in-memeory data.
     """
@@ -69,17 +94,17 @@ class DataConsumer:  # pylint: disable=too-few-public-methods
     def index(self):  # pylint: disable=no-self-use
         """Index endpoint."""
         if cherrypy.request.method not in ['POST', 'PATCH', 'PUT']:
-            return reversed(list(db))
+            return list(reversed(list(db)))
 
         data = cherrypy.request.json
         response = {'status': 'OK'}
-
-        if data.get('_id'):
-            response['ref'] = add_json_record(data)
+        response['references'] = add_records(data)
 
         return response
 
 
 if __name__ == '__main__':
     cherrypy.config.update({'server.socket_host': '0.0.0.0'})
-    cherrypy.quickstart(DataConsumer(), '')
+
+    conf = {'/': {'/': {'tools.gzip.on': True}}}
+    cherrypy.quickstart(DataConsumer(), '/', conf)
