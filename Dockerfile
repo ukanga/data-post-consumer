@@ -6,10 +6,10 @@ LABEL version="0.1.0"
 
 RUN mkdir -p /srv/app
 
-ADD requirements.pip /srv/app/requirements.pip
+ADD requirements.txt /srv/app/requirements.txt
 ADD controller.py   /srv/app/controller.py
 
-RUN pip install -r /srv/app/requirements.pip
+RUN pip install -r /srv/app/requirements.txt
 
 EXPOSE 8080
 
