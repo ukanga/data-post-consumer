@@ -1,8 +1,11 @@
 FROM frolvlad/alpine-python3
+
 MAINTAINER Dickson Ukang'a
-LABEL version="0.1"
+
+LABEL version="0.1.0"
 
 RUN mkdir -p /srv/app
+
 ADD requirements.pip /srv/app/requirements.pip
 ADD controller.py   /srv/app/controller.py
 
