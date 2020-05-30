@@ -9,7 +9,7 @@ Running it
 ----------
 
 ```
-$ pip install -r requirements.pip
+$ pip install -r requirements.txt
 $ python controller.py
 ```
 
